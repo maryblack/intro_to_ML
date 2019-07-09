@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import math
+from sklearn.metrics import roc_auc_score
 
 def scalar_prod(w1,w2):
     s = 0
@@ -35,35 +36,32 @@ def sum2_l(x, y, w1, w2):
     return s/l
 
 
-def normal_grad(X,y, w_0:list, k):
+def normal_grad(X,y, w_0:list, k, C):
     w1 = w_0[0]
     w2 = w_0[1]
-    w1 = w1 + k*sum1_l(X,y,w1,w2)
-    w2 = w2 + k*sum2_l(X,y,w1,w2)
+    w1 = w1 + k*sum1_l(X,y,w1,w2)-k*C*w1
+    w2 = w2 + k*sum2_l(X,y,w1,w2)-k*C*w2
     w = [w1,w2]
     wx = [w[i]-w_0[i] for i in range(0,len(w))]
     eps = math.sqrt(scalar_prod(wx,wx))
     return w, eps
 
-def LogRegression(X,y,k):
+
+def LogRegression(X,y,k,C):
     w_0 = [0,0]#initial weights
     e = 1e-5
-    N = 1e+4#iterations
+    N = 1e+3#iterations
     i = 0
     eps = 10
     while (eps > e) and (i < N):
-        w, eps = normal_grad(X,y,w_0,k)
+        w, eps = normal_grad(X,y,w_0,k,C)
         w_0 = w
         i+=1
-
-    #a_x = [a_sigma(x,w) for x in X]
-    a_x = [np.sign(scalar_prod(x,w)) for x in X]
+    a_x = [a_sigma(x,w) for x in X]
+    #a_x = [np.sign(scalar_prod(x,w)) for x in X]
     return a_x
 
 
-def L2_grad(X,y):
-    y_pred = 0
-    return y_pred
 
 def split_xy(data):
     x = data.iloc[:, 1:len(data.columns)]
@@ -77,7 +75,11 @@ def main():
     X, y = split_xy(df)
     print(X)
     print(y)
-    print(LogRegression(X,y,0.1))
+    a_x = LogRegression(X,y,0.1,0)
+    print(f'ROC-AUC for Logistic regression without regularization: {roc_auc_score(y,a_x)}')
+    a_x = LogRegression(X,y,0.1,10)
+    print(f'ROC-AUC for Logistic regression with regularization: {roc_auc_score(y,a_x)}')
+
 
 
 if __name__ == '__main__':
