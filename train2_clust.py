@@ -54,9 +54,7 @@ def main():
     I = mtx_to_img(X,y,w, h)
     F = sk.img_as_float(image)
     print(max(clust(X)))
-    clusters = by_cluster(clust(X),X)
-    for c in clusters:
-        print(c)
+
     pylab.imshow(I)
     pylab.show()
 
