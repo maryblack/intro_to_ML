@@ -128,7 +128,7 @@ def colour_reduction(image):
     #pylab.imshow(image)
     #pylab.show()
     X, y, w, h = RGB_matrix(image)
-    for i in range(12,15):
+    for i in range(11,15):
         list_of_clust = clust(X,i)
         i, lists = by_cluster(list_of_clust, X)
         low_colours = mean_reduction(list_of_clust, lists, w, h)
@@ -147,9 +147,6 @@ def MSE(X1, X2, w, h):
         sum_r += (X1[i][0]-X2[i][0])*(X1[i][0]-X2[i][0])
         sum_g += (X1[i][1]-X2[i][1])*(X1[i][1]-X2[i][1])
         sum_b += (X1[i][2]-X2[i][2])*(X1[i][2]-X2[i][2])
-    # print(X1[1], X2[1])
-    # print(X1[10000], X2[10000])
-    # print(sum_r, sum_g, sum_b)
     avg_mse = (sum_r + sum_b + sum_g)/(3*w*h)
     return avg_mse
 
@@ -160,11 +157,6 @@ def main():
     image = imread('parrots.jpg')
     F = sk.img_as_float(image)
     colour_reduction(image)
-
-    #I = mtx_to_img(X,y,w, h)
-    #F = sk.img_as_float(image)
-    # pylab.imshow(I)
-    # pylab.show()
 
 if __name__ == '__main__':
     main()
